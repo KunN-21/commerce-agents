@@ -14,23 +14,29 @@ from shopping_agent import ShoppingAgentConfig
 
 
 def build_shopping_config() -> ShoppingAgentConfig:
+    model = os.environ.get("SHOPPING_MODEL") or "claude-opus-5"
     return ShoppingAgentConfig(
         brand_name="ACME",
         assistant_name="ACME Assistant",
         brand_voice="professional, warm, and brief",
+        model=model,
+        memory_model=model,
     )
 
 
 def build_merchant_config(store_name: str) -> MerchantAgentConfig:
+    model = os.environ.get("MERCHANT_MODEL") or "claude-opus-5"
     return MerchantAgentConfig(
         brand_name=store_name,
         require_host_approval=host_approval_default(),
         approval_surface="the Approve button on the change preview card",
+        model=model,
         # This deployment runs the run_analysis delegate over MockRetailMerchant's
         # read-only SQL view of the fixtures. MERCHANT_ANALYSIS_CODE_EXECUTION=1 adds the
         # code-execution sandbox (first-party API only); MERCHANT_ANALYSIS_MODEL overrides
         # the delegate's model, which otherwise inherits the main one.
         enable_analysis=True,
+        memory_model=model,
         analysis_use_code_execution=os.environ.get("MERCHANT_ANALYSIS_CODE_EXECUTION", "0") == "1",
         analysis_model=os.environ.get("MERCHANT_ANALYSIS_MODEL") or None,
     )
